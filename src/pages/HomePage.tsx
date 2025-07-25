@@ -151,7 +151,11 @@ const pdfTools = [
   }
 ]
 
-export function HomePage() {
+interface HomePageProps {
+  user: any
+}
+
+export function HomePage({ user }: HomePageProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -173,17 +177,44 @@ export function HomePage() {
               <a href="#" className="text-gray-700 hover:text-primary transition-colors">Desktop</a>
               <a href="#" className="text-gray-700 hover:text-primary transition-colors">Mobile</a>
               <a href="#" className="text-gray-700 hover:text-primary transition-colors">Developers</a>
-              <a href="#" className="text-gray-700 hover:text-primary transition-colors">Pricing</a>
+              <Link to="/pricing" className="text-gray-700 hover:text-primary transition-colors">Pricing</Link>
             </nav>
 
             {/* Desktop Auth Buttons */}
             <div className="hidden md:flex items-center space-x-4">
-              <Button variant="ghost" className="text-gray-700 hover:text-primary">
-                Log in
-              </Button>
-              <Button className="bg-primary hover:bg-primary/90 text-white">
-                Sign up
-              </Button>
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-gray-600">Welcome, {user.email}</span>
+                  <Link to="/pricing">
+                    <Button variant="ghost" className="text-primary hover:text-primary/80">
+                      Upgrade
+                    </Button>
+                  </Link>
+                  <Button 
+                    variant="ghost"
+                    onClick={() => {
+                      // Logout functionality would go here
+                      console.log('Logout clicked')
+                    }}
+                    className="text-gray-700 hover:text-gray-900"
+                  >
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <Button variant="ghost" className="text-gray-700 hover:text-primary">
+                      Log in
+                    </Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button className="bg-primary hover:bg-primary/90 text-white">
+                      Sign up
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -207,12 +238,34 @@ export function HomePage() {
               <a href="#" className="block px-3 py-2 text-gray-700 hover:text-primary">Desktop</a>
               <a href="#" className="block px-3 py-2 text-gray-700 hover:text-primary">Mobile</a>
               <a href="#" className="block px-3 py-2 text-gray-700 hover:text-primary">Developers</a>
-              <a href="#" className="block px-3 py-2 text-gray-700 hover:text-primary">Pricing</a>
+              <Link to="/pricing" className="block px-3 py-2 text-gray-700 hover:text-primary">Pricing</Link>
               <div className="border-t border-gray-200 pt-4 pb-3">
-                <div className="flex items-center px-3 space-x-3">
-                  <Button variant="ghost" className="flex-1">Log in</Button>
-                  <Button className="flex-1 bg-primary hover:bg-primary/90 text-white">Sign up</Button>
-                </div>
+                {user ? (
+                  <div className="px-3 space-y-3">
+                    <p className="text-sm text-gray-600">Welcome, {user.email}</p>
+                    <div className="flex space-x-3">
+                      <Link to="/pricing" className="flex-1">
+                        <Button variant="ghost" className="w-full">Upgrade</Button>
+                      </Link>
+                      <Button 
+                        variant="ghost" 
+                        className="flex-1"
+                        onClick={() => console.log('Logout clicked')}
+                      >
+                        Logout
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center px-3 space-x-3">
+                    <Link to="/login" className="flex-1">
+                      <Button variant="ghost" className="w-full">Log in</Button>
+                    </Link>
+                    <Link to="/register" className="flex-1">
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-white">Sign up</Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>

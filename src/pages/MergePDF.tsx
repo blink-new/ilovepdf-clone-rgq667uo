@@ -5,7 +5,11 @@ import { FileUpload } from '../components/FileUpload'
 import { ArrowLeft, Download, FileText, ArrowUpDown, Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-export function MergePDF() {
+interface MergePDFProps {
+  user: any
+}
+
+export function MergePDF({ user }: MergePDFProps) {
   const [files, setFiles] = useState<File[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
   const [isComplete, setIsComplete] = useState(false)

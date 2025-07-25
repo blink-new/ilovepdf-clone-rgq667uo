@@ -5,7 +5,11 @@ import { FileUpload } from '../components/FileUpload'
 import { ArrowLeft, Download, Scissors, FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-export function SplitPDF() {
+interface SplitPDFProps {
+  user: any
+}
+
+export function SplitPDF({ user }: SplitPDFProps) {
   const [file, setFile] = useState<File | null>(null)
   const [splitMode, setSplitMode] = useState<'pages' | 'ranges'>('pages')
   const [pageNumbers, setPageNumbers] = useState('')

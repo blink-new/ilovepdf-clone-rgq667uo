@@ -5,7 +5,11 @@ import { FileUpload } from '../components/FileUpload'
 import { ArrowLeft, Download, Archive, FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-export function CompressPDF() {
+interface CompressPDFProps {
+  user: any
+}
+
+export function CompressPDF({ user }: CompressPDFProps) {
   const [file, setFile] = useState<File | null>(null)
   const [compressionLevel, setCompressionLevel] = useState<'low' | 'medium' | 'high'>('medium')
   const [isProcessing, setIsProcessing] = useState(false)
