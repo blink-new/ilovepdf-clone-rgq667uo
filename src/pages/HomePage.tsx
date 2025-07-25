@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '../components/ui/button'
 import { Card, CardContent } from '../components/ui/card'
 import { Link } from 'react-router-dom'
+import { blink } from '../blink/client'
 import { 
   FileText, 
   Scissors, 
@@ -184,6 +185,11 @@ export function HomePage({ user }: HomePageProps) {
             <div className="hidden md:flex items-center space-x-4">
               {user ? (
                 <div className="flex items-center space-x-4">
+                  <Link to="/dashboard">
+                    <Button variant="ghost" className="text-gray-700 hover:text-primary">
+                      Dashboard
+                    </Button>
+                  </Link>
                   <span className="text-gray-600">Welcome, {user.email}</span>
                   <Link to="/pricing">
                     <Button variant="ghost" className="text-primary hover:text-primary/80">
@@ -192,10 +198,7 @@ export function HomePage({ user }: HomePageProps) {
                   </Link>
                   <Button 
                     variant="ghost"
-                    onClick={() => {
-                      // Logout functionality would go here
-                      console.log('Logout clicked')
-                    }}
+                    onClick={() => blink.auth.logout()}
                     className="text-gray-700 hover:text-gray-900"
                   >
                     Logout
@@ -244,13 +247,16 @@ export function HomePage({ user }: HomePageProps) {
                   <div className="px-3 space-y-3">
                     <p className="text-sm text-gray-600">Welcome, {user.email}</p>
                     <div className="flex space-x-3">
+                      <Link to="/dashboard" className="flex-1">
+                        <Button variant="ghost" className="w-full">Dashboard</Button>
+                      </Link>
                       <Link to="/pricing" className="flex-1">
                         <Button variant="ghost" className="w-full">Upgrade</Button>
                       </Link>
                       <Button 
                         variant="ghost" 
                         className="flex-1"
-                        onClick={() => console.log('Logout clicked')}
+                        onClick={() => blink.auth.logout()}
                       >
                         Logout
                       </Button>

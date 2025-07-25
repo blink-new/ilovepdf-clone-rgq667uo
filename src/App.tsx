@@ -5,6 +5,9 @@ import { HomePage } from './pages/HomePage'
 import { MergePDF } from './pages/MergePDF'
 import { SplitPDF } from './pages/SplitPDF'
 import { CompressPDF } from './pages/CompressPDF'
+import { PDFToWord } from './pages/PDFToWord'
+import { WatermarkPDF } from './pages/WatermarkPDF'
+import { Dashboard } from './pages/Dashboard'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Pricing from './pages/Pricing'
@@ -39,6 +42,9 @@ function App() {
         <Route path="/merge" element={<MergePDF user={user} />} />
         <Route path="/split" element={<SplitPDF user={user} />} />
         <Route path="/compress" element={<CompressPDF user={user} />} />
+        <Route path="/pdf-to-word" element={<PDFToWord user={user} />} />
+        <Route path="/watermark" element={<WatermarkPDF user={user} />} />
+        <Route path="/dashboard" element={<Dashboard user={user} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/pricing" element={<Pricing />} />
