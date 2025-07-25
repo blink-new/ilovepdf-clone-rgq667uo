@@ -1,0 +1,270 @@
+import React, { useState } from 'react'
+import { Button } from '../components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { FileUpload } from '../components/FileUpload'
+import { Link } from 'react-router-dom'
+import { PDFProcessor } from '../utils/pdfProcessor'
+import { ArrowLeft, FileSpreadsheet, Download, CheckCircle, Loader2 } from 'lucide-react'
+
+interface PDFToExcelProps {
+  user: any
+}
+
+export default function PDFToExcel({ user }: PDFToExcelProps) {
+  const [files, setFiles] = useState<File[]>([])
+  const [processing, setProcessing] = useState(false)
+  const [results, setResults] = useState<Array<{ file: Blob; filename: string }>>([])
+  const [error, setError] = useState<string>('')
+
+  const handleFilesSelected = (selectedFiles: File[]) => {
+    setFiles(selectedFiles)
+    setError('')
+    setResults([])
+  }
+
+  const handleProcess = async () => {
+    if (files.length === 0) return
+
+    setProcessing(true)
+    setError('')
+    
+    try {
+      const processedResults = []
+      
+      for (const file of files) {
+        const result = await PDFProcessor.pdfToExcel(file)
+        
+        if (result.success && result.file) {
+          processedResults.push({
+            file: result.file,
+            filename: result.filename || `${file.name}-data.csv`
+          })
+        } else {
+          throw new Error(result.error || 'Failed to convert PDF')
+        }
+      }
+      
+      setResults(processedResults)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred during conversion')
+    } finally {
+      setProcessing(false)
+    }
+  }
+
+  const downloadFile = (file: Blob, filename: string) => {
+    const url = URL.createObjectURL(file)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  const downloadAll = () => {
+    results.forEach(result => {
+      downloadFile(result.file, result.filename)
+    })
+  }
+
+  if (results.length > 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="mb-8">
+            <Link to="/" className="inline-flex items-center text-green-600 hover:text-green-700 mb-4">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to tools
+            </Link>
+            <h1 className="text-3xl font-bold text-gray-900">PDF to Excel Conversion Complete!</h1>
+          </div>
+
+          <Card className="mb-8">
+            <CardHeader className="text-center">
+              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="h-8 w-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-green-600">Conversion Successful!</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center">
+              <p className="text-gray-600 mb-6">
+                Your PDF files have been converted to Excel format. Download the files below.
+              </p>
+              
+              <div className="space-y-4 mb-6">
+                {results.map((result, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center">
+                      <FileSpreadsheet className="h-8 w-8 text-green-500 mr-3" />
+                      <span className="font-medium">{result.filename}</span>
+                    </div>
+                    <Button
+                      onClick={() => downloadFile(result.file, result.filename)}
+                      className="bg-green-500 hover:bg-green-600 text-white"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              {results.length > 1 && (
+                <Button
+                  onClick={downloadAll}
+                  size="lg"
+                  className="bg-green-500 hover:bg-green-600 text-white"
+                >
+                  <Download className="mr-2 h-5 w-5" />
+                  Download All Files
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+
+          <div className="text-center">
+            <Button
+              onClick={() => {
+                setFiles([])
+                setResults([])
+                setError('')
+              }}
+              variant="outline"
+              size="lg"
+            >
+              Convert Another PDF
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="mb-8">
+          <Link to="/" className="inline-flex items-center text-green-600 hover:text-green-700 mb-4">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to tools
+          </Link>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">PDF to Excel</h1>
+          <p className="text-gray-600">Pull data straight from PDFs into Excel spreadsheets in a few short seconds.</p>
+        </div>
+
+        {/* Features */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Card>
+            <CardContent className="p-6 text-center">
+              <FileSpreadsheet className="h-12 w-12 text-green-500 mx-auto mb-4" />
+              <h3 className="font-semibold mb-2">Extract Tables</h3>
+              <p className="text-sm text-gray-600">Automatically detect and extract table data from your PDFs</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 text-center">
+              <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
+              <h3 className="font-semibold mb-2">Preserve Formatting</h3>
+              <p className="text-sm text-gray-600">Maintain data structure and formatting in Excel format</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 text-center">
+              <Download className="h-12 w-12 text-green-500 mx-auto mb-4" />
+              <h3 className="font-semibold mb-2">Ready to Use</h3>
+              <p className="text-sm text-gray-600">Download CSV files that open directly in Excel</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Upload Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="text-center">Upload PDF Files</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FileUpload
+              onFilesSelected={handleFilesSelected}
+              acceptedTypes={['.pdf']}
+              maxFiles={10}
+              maxSize={50 * 1024 * 1024} // 50MB
+            />
+            
+            {files.length > 0 && (
+              <div className="mt-6">
+                <h3 className="font-semibold mb-4">Selected Files ({files.length})</h3>
+                <div className="space-y-2 mb-6">
+                  {files.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center">
+                        <FileSpreadsheet className="h-5 w-5 text-green-500 mr-3" />
+                        <span className="font-medium">{file.name}</span>
+                        <span className="text-sm text-gray-500 ml-2">
+                          ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {error && (
+                  <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-600">{error}</p>
+                  </div>
+                )}
+
+                <div className="text-center">
+                  <Button
+                    onClick={handleProcess}
+                    disabled={processing}
+                    size="lg"
+                    className="bg-green-500 hover:bg-green-600 text-white"
+                  >
+                    {processing ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Converting to Excel...
+                      </>
+                    ) : (
+                      <>
+                        <FileSpreadsheet className="mr-2 h-5 w-5" />
+                        Convert to Excel
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Info Section */}
+        <Card>
+          <CardContent className="p-6">
+            <h3 className="font-semibold mb-4">How PDF to Excel Conversion Works</h3>
+            <div className="space-y-3 text-sm text-gray-600">
+              <div className="flex items-start">
+                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">1</div>
+                <p>Upload your PDF files containing tables or data you want to extract</p>
+              </div>
+              <div className="flex items-start">
+                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">2</div>
+                <p>Our system analyzes the PDF structure and identifies tabular data</p>
+              </div>
+              <div className="flex items-start">
+                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">3</div>
+                <p>Data is extracted and formatted into CSV files compatible with Excel</p>
+              </div>
+              <div className="flex items-start">
+                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">4</div>
+                <p>Download your Excel-ready files and start working with your data immediately</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}

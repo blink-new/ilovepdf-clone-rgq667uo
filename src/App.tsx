@@ -6,7 +6,18 @@ import { MergePDF } from './pages/MergePDF'
 import { SplitPDF } from './pages/SplitPDF'
 import { CompressPDF } from './pages/CompressPDF'
 import { PDFToWord } from './pages/PDFToWord'
+import PDFToExcel from './pages/PDFToExcel'
+import PDFToPowerPoint from './pages/PDFToPowerPoint'
+import PDFToJPG from './pages/PDFToJPG'
+import WordToPDF from './pages/WordToPDF'
+import JPGToPDF from './pages/JPGToPDF'
 import { WatermarkPDF } from './pages/WatermarkPDF'
+import RotatePDF from './pages/RotatePDF'
+import EditPDF from './pages/EditPDF'
+import ExcelToPDF from './pages/ExcelToPDF'
+import PowerPointToPDF from './pages/PowerPointToPDF'
+import UnlockPDF from './pages/UnlockPDF'
+import ProtectPDF from './pages/ProtectPDF'
 import { Dashboard } from './pages/Dashboard'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -43,7 +54,18 @@ function App() {
         <Route path="/split" element={<SplitPDF user={user} />} />
         <Route path="/compress" element={<CompressPDF user={user} />} />
         <Route path="/pdf-to-word" element={<PDFToWord user={user} />} />
+        <Route path="/pdf-to-excel" element={<PDFToExcel user={user} />} />
+        <Route path="/pdf-to-powerpoint" element={<PDFToPowerPoint user={user} />} />
+        <Route path="/pdf-to-jpg" element={<PDFToJPG user={user} />} />
+        <Route path="/word-to-pdf" element={<WordToPDF user={user} />} />
+        <Route path="/excel-to-pdf" element={<ExcelToPDF user={user} />} />
+        <Route path="/powerpoint-to-pdf" element={<PowerPointToPDF user={user} />} />
+        <Route path="/jpg-to-pdf" element={<JPGToPDF user={user} />} />
+        <Route path="/edit-pdf" element={<EditPDF user={user} />} />
         <Route path="/watermark" element={<WatermarkPDF user={user} />} />
+        <Route path="/rotate" element={<RotatePDF user={user} />} />
+        <Route path="/unlock" element={<UnlockPDF user={user} />} />
+        <Route path="/protect" element={<ProtectPDF user={user} />} />
         <Route path="/dashboard" element={<Dashboard user={user} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
